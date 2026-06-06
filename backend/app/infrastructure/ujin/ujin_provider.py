@@ -1,6 +1,6 @@
 import requests
 from typing import Dict
-from ujin_provider import IUjinProvider
+from app.domain.interfaces.providers.ujin_provider import IUjinProvider
 
 class UjinProvider(IUjinProvider):
         
