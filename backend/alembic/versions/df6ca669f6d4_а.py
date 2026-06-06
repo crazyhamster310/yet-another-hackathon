@@ -1,4 +1,4 @@
-"""а
+"""аdd_building_id_and_complex_id
 
 Revision ID: df6ca669f6d4
 Revises: cb87e85b5801
