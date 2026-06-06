@@ -92,7 +92,7 @@ class UjinProvider(IUjinProvider):
         data["storage"] = storage_data
         return data
 
-    async def get_news(self, complexes: list[int] | None, buildings: list[int] | None, type_: list[str] | None) -> Dict:
+    async def get_news(self, complexes: list[int] | None, buildings: list[int] | None, type_: str | None) -> Dict:
         data = {}
         params = {"token": self.token}
         if complexes:

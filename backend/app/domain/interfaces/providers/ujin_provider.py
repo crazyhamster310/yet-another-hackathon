@@ -4,7 +4,7 @@ from typing import Dict
 class IUjinProvider(ABC):
     
     @abstractmethod
-    def get_news(self, complexes: list[int] = None, buildings: list[int] = None, type_: list[str] = None) -> Dict:
+    def get_news(self, complexes: list[int] = None, buildings: list[int] = None, type_: str = None) -> Dict:
         pass
     
     @abstractmethod
