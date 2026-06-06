@@ -11,15 +11,22 @@ class TemplateDTO(BaseModel):
     id: UUID
     name: str
     widget_type: WidgetType
-    settings: dict
-    content_rotation_settings: dict
+    title: str
+    content: str
 
 
 class TemplateCreateDTO(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     widget_type: WidgetType
-    settings: dict = Field(default_factory=dict)
-    content_rotation_settings: dict = Field(default_factory=dict)
+    title: str = Field(default="", max_length=255)
+    content: str = Field(...)
+
+
+class TemplateUpdateDTO(BaseModel):
+    name: str | None = Field(None, min_length=1, max_length=255)
+    widget_type: WidgetType | None = None
+    title: str | None = Field(None, max_length=255)
+    content: str | None = None
 
 
 class SlotDTO(BaseModel):
@@ -39,7 +46,14 @@ class ScreenReadDTO(BaseModel):
     building_id: int | None = None
     is_emergency: bool
     emergency_text: str | None
-    layout: dict[int, TemplateDTO | None]
+    slots: dict[int, TemplateDTO | None]
+
+
+class ScreenUpdateDTO(BaseModel):
+    slug: str | None = Field(None, min_length=3, max_length=100)
+    name: str | None = Field(None, min_length=1, max_length=255)
+    complex_id: int | None = None
+    building_id: int | None = None
 
 
 class EmergencyUpdateDTO(BaseModel):

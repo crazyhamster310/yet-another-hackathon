@@ -17,21 +17,30 @@ class GetUjinStorageStatsUseCase:
             complexes=complex_ids, buildings=building_ids
         )
 
-        storage = result.get("storage", {})
+        storage = result["storage"]
 
-        if "unassigned" in storage and storage["unassigned"]["error"]:
-            print(storage)
+        if storage["list"]["error"]:
             raise ExternalProviderError(
                 provider_name="Ujin Storage",
-                detail=storage["unassigned"].get("details", "Request failed"),
+                detail=storage["list"].get("details", "Request failed"),
             )
 
-        list_rooms = storage.get("list", {}).get("data", {}).get("items", [])
-        unassigned_rooms = (
-            storage.get("unassigned", {}).get("data", {}).get("items", [])
-        )
+        storage_list_data = storage["list"]
+
+        total_count = 0
+        unassigned_count = 0
+
+        complexes = storage_list_data["data"]["items"]
+        for complex_item in complexes:
+            buildings = complex_item["buildings"]
+            for building in buildings:
+                storages = building["storages"]
+                for storage_unit in storages:
+                    total_count += 1
+                    if storage_unit["assignment_type"] == "unassigned":
+                        unassigned_count += 1
 
         return {
-            "unassigned_count": len(unassigned_rooms),
-            "total_available": len(list_rooms),
+            "total_count": total_count,
+            "unassigned_count": unassigned_count,
         }

@@ -18,10 +18,12 @@ from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
 from app.application.use_cases.screens.create_screen import CreateScreenUseCase
+from app.application.use_cases.screens.delete_screen import DeleteScreenUseCase
 from app.application.use_cases.screens.get_screen_config import (
     GetScreenConfigUseCase,
 )
 from app.application.use_cases.screens.list_screens import ListScreensUseCase
+from app.application.use_cases.screens.update_screen import UpdateScreenUseCase
 from app.application.use_cases.templates.assign_template_to_slot import (
     AssignTemplateToSlotUseCase,
 )
@@ -34,6 +36,9 @@ from app.application.use_cases.templates.delete_template import (
 from app.application.use_cases.templates.get_template import GetTemplateUseCase
 from app.application.use_cases.templates.list_templates import (
     ListTemplatesUseCase,
+)
+from app.application.use_cases.templates.update_template import (
+    UpdateTemplateUseCase,
 )
 from app.core.config import settings
 from app.domain.interfaces.providers.ujin import IUjinProvider
@@ -93,14 +98,28 @@ def get_activate_emergency_use_case(
 
 def get_create_screen_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
+    ujin_provider: IUjinProvider = Depends(get_ujin_provider),
 ) -> CreateScreenUseCase:
-    return CreateScreenUseCase(repo)
+    return CreateScreenUseCase(repo, ujin_provider)
 
 
 def get_list_screens_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
 ) -> ListScreensUseCase:
     return ListScreensUseCase(repo)
+
+
+def get_update_screen_use_case(
+    repo: IScreenRepository = Depends(get_screen_repository),
+    provider: IUjinProvider = Depends(get_ujin_provider),
+) -> UpdateScreenUseCase:
+    return UpdateScreenUseCase(repo, provider)
+
+
+def get_delete_screen_use_case(
+    repo: IScreenRepository = Depends(get_screen_repository),
+) -> DeleteScreenUseCase:
+    return DeleteScreenUseCase(repo)
 
 
 # TEMPLATE
@@ -135,6 +154,12 @@ def get_delete_template_use_case(
     repo: ITemplateRepository = Depends(get_template_repository),
 ) -> DeleteTemplateUseCase:
     return DeleteTemplateUseCase(repo)
+
+
+def get_update_template_use_case(
+    repo: ITemplateRepository = Depends(get_template_repository),
+) -> UpdateTemplateUseCase:
+    return UpdateTemplateUseCase(repo)
 
 
 # UJIN

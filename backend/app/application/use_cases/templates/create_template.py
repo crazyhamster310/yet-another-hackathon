@@ -11,8 +11,8 @@ class CreateTemplateUseCase:
         template_entity = Template(
             name=dto.name,
             widget_type=dto.widget_type,
-            settings=dto.settings,
-            content_rotation_settings=dto.content_rotation_settings,
+            title=dto.title,
+            content=dto.content,
         )
 
         saved_template = await self.template_repo.save(template_entity)

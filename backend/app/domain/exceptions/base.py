@@ -9,6 +9,11 @@ class EntityNotFoundException(DomainException):
         super().__init__(f"{entity_name} с id {entity_id} не найден(а).")
 
 
+class EntityAlreadyExistsException(DomainException):
+    def __init__(self, entity_name: str, entity_id: str):
+        super().__init__(f"{entity_name} с id {entity_id} уже существует.")
+
+
 class ConfigurationError(DomainException):
     pass
 

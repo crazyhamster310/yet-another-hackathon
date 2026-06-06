@@ -69,7 +69,6 @@ class UjinProvider(IUjinProvider):
 
         endpoints = [
             "list",
-            "free",
         ]
 
         async with httpx.AsyncClient() as client:
@@ -98,7 +97,6 @@ class UjinProvider(IUjinProvider):
 
         endpoints = [
             "list",
-            "unassigned",
         ]
 
         async with httpx.AsyncClient() as client:
@@ -126,7 +124,7 @@ class UjinProvider(IUjinProvider):
         if buildings:
             params["buildings[]"] = buildings
         if type_:
-            params["types[]"] = [type_]
+            params["type"] = type_
 
         async with httpx.AsyncClient() as client:
             res = await self._safe_request(client, "/api/v1/news/list", params)

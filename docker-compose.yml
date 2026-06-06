@@ -45,8 +45,6 @@ services:
     build:
       context: ./backend
     container_name: smart_display_backend
-    ports:
-      - "${BACKEND_PORT}:8000"
     env_file:
       - .env
     restart: unless-stopped
@@ -63,5 +61,32 @@ services:
       timeout: ${HEALTHCHECK_TIMEOUT}
       retries: ${HEALTHCHECK_RETRIES}
 
+  proxy:
+    image: caddy:latest
+    container_name: smart_display_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+
+  simulator:
+    build:
+      context: ./simulator
+    container_name: smart_display_simulator
+    restart: always
+    environment:
+      - SCREEN_SLUG=lobby-1
+    depends_on:
+      proxy:
+        condition: service_started
+
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:

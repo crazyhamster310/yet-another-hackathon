@@ -7,6 +7,7 @@ from app.api.exception_handlers import (
     entity_not_found_exception_handler,
     external_provider_exception_handler,
 )
+from app.api.middleware import log_requests_middleware
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.domain.exceptions.base import (
@@ -32,6 +33,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.middleware("http")(log_requests_middleware)
 
     app.add_exception_handler(DomainException, domain_exception_handler)
     app.add_exception_handler(

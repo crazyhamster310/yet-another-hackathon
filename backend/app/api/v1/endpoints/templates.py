@@ -7,8 +7,13 @@ from app.api.deps import (
     get_delete_template_use_case,
     get_get_template_use_case,
     get_list_templates_use_case,
+    get_update_template_use_case,
 )
-from app.application.dtos.screen import TemplateCreateDTO, TemplateDTO
+from app.application.dtos.screen import (
+    TemplateCreateDTO,
+    TemplateDTO,
+    TemplateUpdateDTO,
+)
 from app.application.use_cases.templates.create_template import (
     CreateTemplateUseCase,
 )
@@ -18,6 +23,9 @@ from app.application.use_cases.templates.delete_template import (
 from app.application.use_cases.templates.get_template import GetTemplateUseCase
 from app.application.use_cases.templates.list_templates import (
     ListTemplatesUseCase,
+)
+from app.application.use_cases.templates.update_template import (
+    UpdateTemplateUseCase,
 )
 
 router = APIRouter()
@@ -38,6 +46,15 @@ async def list_templates(
     use_case: ListTemplatesUseCase = Depends(get_list_templates_use_case),
 ):
     return await use_case.execute()
+
+
+@router.patch("/", response_model=TemplateDTO)
+async def update_template(
+    template_id: UUID,
+    dto: TemplateUpdateDTO,
+    use_case: UpdateTemplateUseCase = Depends(get_update_template_use_case),
+):
+    return await use_case.execute(template_id, dto)
 
 
 @router.get("/{template_id}", response_model=TemplateDTO)

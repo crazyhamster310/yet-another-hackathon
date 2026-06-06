@@ -35,3 +35,7 @@ class IScreenRepository(ABC):
         self, screen_id: UUID, slot_index: int, template_id: UUID | None
     ) -> None:
         pass
+
+    @abstractmethod
+    async def delete(self, screen_id: UUID) -> bool:
+        pass

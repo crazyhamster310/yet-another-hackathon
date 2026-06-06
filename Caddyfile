@@ -1,0 +1,27 @@
+{
+    auto_https off
+}
+
+:80 {
+    log
+
+    handle /api/* {
+        reverse_proxy backend:8000
+    }
+
+    handle /ws/* {
+        reverse_proxy backend:8000
+    }
+
+    handle /docs* {
+        reverse_proxy backend:8000
+    }
+    handle /openapi.json* {
+        reverse_proxy backend:8000
+    }
+
+    # TODO: Убрать заглушку для фронта
+    handle /* {
+        respond "Smart Display System: Proxy is working. API is at /api" 200
+    }
+}

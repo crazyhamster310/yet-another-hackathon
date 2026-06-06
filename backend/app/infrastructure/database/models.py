@@ -1,7 +1,6 @@
 import uuid
 
 from sqlalchemy import (
-    JSON,
     Boolean,
     Enum,
     ForeignKey,
@@ -28,9 +27,9 @@ class TemplateModel(Base):
     )
     name: Mapped[str] = mapped_column(String(255))
     widget_type: Mapped[WidgetType] = mapped_column(Enum(WidgetType))
-    duration: Mapped[int] = mapped_column(Integer, default=15)
-    settings: Mapped[dict] = mapped_column(JSON, default=dict)
-    content_rotation_settings: Mapped[dict] = mapped_column(JSON, default=dict)
+
+    title: Mapped[str] = mapped_column(String(255), default="")
+    content: Mapped[str] = mapped_column(Text)
 
 
 class ScreenModel(Base):

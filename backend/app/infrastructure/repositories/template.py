@@ -34,8 +34,8 @@ class SqlAlchemyTemplateRepository(
         data = {
             "name": template.name,
             "widget_type": template.widget_type,
-            "settings": template.settings,
-            "content_rotation_settings": template.content_rotation_settings,
+            "title": template.title,
+            "content": template.content,
         }
 
         if model:

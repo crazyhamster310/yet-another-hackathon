@@ -18,10 +18,10 @@ class SqlAlchemyScreenRepository(
         super().__init__(ScreenModel, session)
 
     def _to_entity(self, model: ScreenModel) -> ScreenEntity:
-        layout = {i: None for i in range(4)}
+        slots = {i: None for i in range(4)}
         for slot in model.slots:
             if slot.template:
-                layout[slot.slot_index] = TemplateEntity.model_validate(
+                slots[slot.slot_index] = TemplateEntity.model_validate(
                     slot.template
                 )
 
@@ -33,7 +33,7 @@ class SqlAlchemyScreenRepository(
             building_id=model.building_id,
             is_emergency=model.is_emergency,
             emergency_text=model.emergency_text,
-            layout=layout,
+            slots=slots,
         )
 
     async def get_by_id(self, screen_id: UUID) -> ScreenEntity | None:
@@ -74,7 +74,11 @@ class SqlAlchemyScreenRepository(
         return [self._to_entity(m) for m in result.scalars().all()]
 
     async def save(self, screen: ScreenEntity) -> ScreenEntity:
-        query = select(ScreenModel).where(ScreenModel.id == screen.id)
+        query = (
+            select(ScreenModel)
+            .where(ScreenModel.id == screen.id)
+            .options(selectinload(ScreenModel.slots))
+        )
         res = await self.session.execute(query)
         model = res.scalar_one_or_none()
 
@@ -88,6 +92,8 @@ class SqlAlchemyScreenRepository(
             )
             self.session.add(model)
 
+        model.slug = screen.slug
+        model.name = screen.name
         model.is_emergency = screen.is_emergency
         model.emergency_text = screen.emergency_text
         model.complex_id = screen.complex_id
@@ -98,7 +104,7 @@ class SqlAlchemyScreenRepository(
         }
 
         for i in range(4):
-            template_id = screen.layout[i].id if screen.layout[i] else None
+            template_id = screen.slots[i].id if screen.slots[i] else None
 
             if i in existing_slots:
                 existing_slots[i].template_id = template_id
@@ -145,3 +151,6 @@ class SqlAlchemyScreenRepository(
             self.session.add(new_slot)
 
         await self.session.flush()
+
+    async def delete(self, screen_id: UUID) -> bool:
+        return await super().delete(id=screen_id)

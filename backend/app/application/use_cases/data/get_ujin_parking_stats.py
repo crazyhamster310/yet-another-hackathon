@@ -17,18 +17,32 @@ class GetUjinParkingStatsUseCase:
             complexes=complex_ids, buildings=building_ids
         )
 
-        parking = result.get("parking", {})
+        parking = result["parking"]
 
-        if "free" in parking and parking["free"]["error"]:
+        if parking["list"]["error"]:
             raise ExternalProviderError(
                 provider_name="Ujin Parking",
-                detail=parking["free"].get("details", "Request failed"),
+                detail=parking["list"].get("details", "Request failed"),
             )
 
-        list_spots = parking.get("list", {}).get("data", {}).get("items", [])
-        free_spots = parking.get("free", {}).get("data", {}).get("items", [])
+        parking_list_data = parking["list"]
+
+        total_count = 0
+        unassigned_count = 0
+
+        complexes = parking_list_data["data"]["items"]
+        for complex_item in complexes:
+            buildings = complex_item["buildings"]
+            for building in buildings:
+                zones = building["zones"]
+                for zone in zones:
+                    spots = zone["spots"]
+                    for spot in spots:
+                        total_count += 1
+                        if spot["assignment_type"] == "unassigned":
+                            unassigned_count += 1
 
         return {
-            "free_count": len(free_spots),
-            "total_available": len(list_spots),
+            "total_count": total_count,
+            "unassigned_count": unassigned_count,
         }
