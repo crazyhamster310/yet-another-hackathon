@@ -4,15 +4,15 @@ from typing import Dict
 class IUjinProvider(ABC):
     
     @abstractmethod
-    def get_news(self, complex_id: list[int] = None, building_id: list[int] = None, type_: list[str] = None) -> Dict:
+    def get_news(self, complexes: list[int] = None, buildings: list[int] = None, type_: list[str] = None) -> Dict:
         pass
     
     @abstractmethod
-    def get_parking(self, complex_id: list[int] = None, building_id: list[int] = None) -> Dict:
+    def get_parking(self, complexes: list[int] = None, buildings: list[int] = None) -> Dict:
         pass
     
     @abstractmethod
-    def get_storage(self, complex_id: list[int] = None, building_id: list[int] = None) -> Dict:
+    def get_storage(self, complexes: list[int] = None, buildings: list[int] = None) -> Dict:
         pass
     
     @abstractmethod
@@ -20,5 +20,5 @@ class IUjinProvider(ABC):
         pass
     
     @abstractmethod
-    def get_buildings(self, complex_id: list[int] = None) -> Dict:
+    def get_buildings(self, complexes: list[int] = None) -> Dict:
         pass
