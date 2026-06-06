@@ -3,11 +3,17 @@ from typing import Any
 from fastapi import APIRouter, Depends, Query
 
 from app.api.deps import (
+    get_ujin_buildings_use_case,
+    get_ujin_complexes_use_case,
     get_ujin_news_use_case,
     get_ujin_parking_use_case,
     get_ujin_storage_use_case,
-    get_ujin_complexes_use_case,
-    get_ujin_buildings_use_case,
+)
+from app.application.use_cases.data.get_ujin_buildings import (
+    GetUjinBuildingsUseCase,
+)
+from app.application.use_cases.data.get_ujin_complexes import (
+    GetUjinComplexesUseCase,
 )
 from app.application.use_cases.data.get_ujin_news import GetUjinNewsUseCase
 from app.application.use_cases.data.get_ujin_parking_stats import (
@@ -16,8 +22,6 @@ from app.application.use_cases.data.get_ujin_parking_stats import (
 from app.application.use_cases.data.get_ujin_storage_stats import (
     GetUjinStorageStatsUseCase,
 )
-from app.application.use_cases.data.get_ujin_complexes import GetUjinComplexesUseCase
-from app.application.use_cases.data.get_ujin_buildings import GetUjinBuildingsUseCase
 
 router = APIRouter()
 

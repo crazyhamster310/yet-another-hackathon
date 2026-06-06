@@ -11,8 +11,6 @@ class GetScreenConfigUseCase:
         screen = await self.screen_repo.get_by_slug(slug)
 
         if not screen:
-            raise EntityNotFoundException(
-                entity_name="Screen", entity_id=slug
-            )
+            raise EntityNotFoundException(entity_name="Screen", entity_id=slug)
 
         return ScreenReadDTO.model_validate(screen)
