@@ -8,6 +8,8 @@ from app.application.use_cases.data.get_ujin_parking_stats import (
 from app.application.use_cases.data.get_ujin_storage_stats import (
     GetUjinStorageStatsUseCase,
 )
+from app.application.use_cases.data.get_ujin_complexes import GetUjinComplexesUseCase
+from app.application.use_cases.data.get_ujin_buildings import GetUjinBuildingsUseCase
 from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
@@ -143,3 +145,14 @@ def get_ujin_storage_use_case(
     provider: IUjinProvider = Depends(get_ujin_provider),
 ) -> GetUjinStorageStatsUseCase:
     return GetUjinStorageStatsUseCase(provider)
+
+def get_ujin_complexes_use_case(
+    provider: IUjinProvider = Depends(get_ujin_provider),
+) -> GetUjinComplexesUseCase:
+    return GetUjinComplexesUseCase(provider)
+
+
+def get_ujin_buildings_use_case(
+    provider: IUjinProvider = Depends(get_ujin_provider),
+) -> GetUjinBuildingsUseCase:
+    return GetUjinBuildingsUseCase(provider)
