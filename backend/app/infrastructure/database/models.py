@@ -1,6 +1,15 @@
 import uuid
 
-from sqlalchemy import JSON, Boolean, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -21,6 +30,7 @@ class TemplateModel(Base):
     widget_type: Mapped[WidgetType] = mapped_column(Enum(WidgetType))
     duration: Mapped[int] = mapped_column(Integer, default=15)
     settings: Mapped[dict] = mapped_column(JSON, default=dict)
+    content_rotation_settings: Mapped[dict] = mapped_column(JSON, default=dict)
 
 
 class ScreenModel(Base):
@@ -35,29 +45,32 @@ class ScreenModel(Base):
     is_emergency: Mapped[bool] = mapped_column(Boolean, default=False)
     emergency_text: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    playlist_associations = relationship(
-        "ScreenTemplateModel",
+    slots = relationship(
+        "ScreenSlotModel",
         back_populates="screen",
-        order_by="ScreenTemplateModel.position",
         cascade="all, delete-orphan",
+        order_by="ScreenSlotModel.slot_index",
     )
 
 
-class ScreenTemplateModel(Base):
-    __tablename__ = "screen_templates"
+class ScreenSlotModel(Base):
+    __tablename__ = "screen_slots"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     screen_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("screens.id", ondelete="CASCADE")
+        ForeignKey("screens.id", ondelete="CASCADE"), index=True
     )
-    template_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("templates.id", ondelete="CASCADE")
+    template_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("templates.id", ondelete="SET NULL"), nullable=True
     )
-    position: Mapped[int] = mapped_column(Integer, default=0)
 
-    screen = relationship(
-        "ScreenModel", back_populates="playlist_associations"
-    )
+    slot_index: Mapped[int] = mapped_column(Integer)
+
+    screen = relationship("ScreenModel", back_populates="slots")
     template = relationship("TemplateModel")
+
+    __table_args__ = (
+        UniqueConstraint("screen_id", "slot_index", name="uq_screen_slot"),
+    )
