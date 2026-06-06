@@ -1,5 +1,5 @@
 from fastapi import FastAPI
 
-app =  FastAPI(
-    title="Smart Display"
-)
+from app.core.config import settings
+
+app = FastAPI(title=settings.APP_NAME)

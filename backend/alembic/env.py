@@ -1,7 +1,7 @@
 import asyncio
 from logging.config import fileConfig
 
-from sqlalchemy import pool, text
+from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
@@ -31,53 +31,6 @@ target_metadata = Base.metadata
 # ... etc.
 
 
-def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table":
-        postgis_tables = {
-            "spatial_ref_sys",
-            "topology",
-            "layer",
-            "addr",
-            "faces",
-            "edges",
-            "featnames",
-            "place",
-            "cousub",
-            "county",
-            "state",
-            "zcta5",
-            "tract",
-            "tabblock",
-            "bg",
-            "pagc_gaz",
-            "pagc_lex",
-            "pagc_rules",
-            "geocode_settings",
-            "geocode_settings_default",
-            "loader_variables",
-            "addrfeat",
-            "loader_lookuptables",
-            "zip_lookup",
-            "zip_state_loc",
-            "place_lookup",
-            "zip_state",
-            "state_lookup",
-            "zip_lookup_base",
-            "secondary_unit_lookup",
-            "direction_lookup",
-            "zip_lookup_all",
-            "tabblock20",
-            "county_lookup",
-            "street_type_lookup",
-            "countysub_lookup",
-            "loader_platform",
-        }
-        if name in postgis_tables:
-            return False
-
-    return True
-
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -96,7 +49,6 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        include_object=include_object,
     )
 
     with context.begin_transaction():
@@ -104,12 +56,9 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    connection.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
-
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
-        include_object=include_object,
     )
 
     with context.begin_transaction():

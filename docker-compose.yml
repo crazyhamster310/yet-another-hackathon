@@ -30,6 +30,17 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  migrations:
+    build:
+      context: ./backend
+    container_name: smart_display_migrations
+    env_file:
+      - .env
+    command: alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+
   backend:
     build:
       context: ./backend
@@ -44,6 +55,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: ${HEALTHCHECK_INTERVAL}
