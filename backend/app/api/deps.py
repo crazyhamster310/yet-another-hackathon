@@ -1,6 +1,12 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.application.use_cases.data.get_ujin_buildings import (
+    GetUjinBuildingsUseCase,
+)
+from app.application.use_cases.data.get_ujin_complexes import (
+    GetUjinComplexesUseCase,
+)
 from app.application.use_cases.data.get_ujin_news import GetUjinNewsUseCase
 from app.application.use_cases.data.get_ujin_parking_stats import (
     GetUjinParkingStatsUseCase,
@@ -8,16 +14,14 @@ from app.application.use_cases.data.get_ujin_parking_stats import (
 from app.application.use_cases.data.get_ujin_storage_stats import (
     GetUjinStorageStatsUseCase,
 )
-from app.application.use_cases.data.get_ujin_complexes import GetUjinComplexesUseCase
-from app.application.use_cases.data.get_ujin_buildings import GetUjinBuildingsUseCase
 from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
 from app.application.use_cases.screens.create_screen import CreateScreenUseCase
-from app.application.use_cases.screens.list_screens import ListScreensUseCase
 from app.application.use_cases.screens.get_screen_config import (
     GetScreenConfigUseCase,
 )
+from app.application.use_cases.screens.list_screens import ListScreensUseCase
 from app.application.use_cases.templates.assign_template_to_slot import (
     AssignTemplateToSlotUseCase,
 )
@@ -27,7 +31,6 @@ from app.application.use_cases.templates.create_template import (
 from app.application.use_cases.templates.delete_template import (
     DeleteTemplateUseCase,
 )
-
 from app.application.use_cases.templates.get_template import GetTemplateUseCase
 from app.application.use_cases.templates.list_templates import (
     ListTemplatesUseCase,
@@ -36,12 +39,14 @@ from app.core.config import settings
 from app.domain.interfaces.providers.ujin import IUjinProvider
 from app.domain.interfaces.repositories.screen import IScreenRepository
 from app.domain.interfaces.repositories.template import ITemplateRepository
+from app.domain.interfaces.services.screen_notifier import IScreenNotifier
 from app.infrastructure.database.session import get_db
 from app.infrastructure.providers.ujin import UjinProvider
 from app.infrastructure.repositories.screen import SqlAlchemyScreenRepository
 from app.infrastructure.repositories.template import (
     SqlAlchemyTemplateRepository,
 )
+from app.infrastructure.services.screen_notifier import WebSocketScreenNotifier
 
 # --- INFRASTRUCTURE ---
 
@@ -64,6 +69,10 @@ def get_ujin_provider() -> IUjinProvider:
     )
 
 
+def get_screen_notifier() -> IScreenNotifier:
+    return WebSocketScreenNotifier()
+
+
 # --- USE CASES ---
 
 # SCREEN
@@ -77,14 +86,16 @@ def get_get_screen_config_use_case(
 
 def get_activate_emergency_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
+    notifier: IScreenNotifier = Depends(get_screen_notifier),
 ) -> ActivateEmergencyUseCase:
-    return ActivateEmergencyUseCase(repo)
+    return ActivateEmergencyUseCase(repo, notifier)
 
 
 def get_create_screen_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
 ) -> CreateScreenUseCase:
     return CreateScreenUseCase(repo)
+
 
 def get_list_screens_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
@@ -145,6 +156,7 @@ def get_ujin_storage_use_case(
     provider: IUjinProvider = Depends(get_ujin_provider),
 ) -> GetUjinStorageStatsUseCase:
     return GetUjinStorageStatsUseCase(provider)
+
 
 def get_ujin_complexes_use_case(
     provider: IUjinProvider = Depends(get_ujin_provider),

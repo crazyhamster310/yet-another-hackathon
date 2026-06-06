@@ -80,7 +80,11 @@ class SqlAlchemyScreenRepository(
 
         if not model:
             model = ScreenModel(
-                id=screen.id, slug=screen.slug, name=screen.name, complex_id=screen.complex_id, building_id=screen.building_id
+                id=screen.id,
+                slug=screen.slug,
+                name=screen.name,
+                complex_id=screen.complex_id,
+                building_id=screen.building_id,
             )
             self.session.add(model)
 

@@ -8,7 +8,12 @@ class CreateScreenUseCase:
         self.screen_repo = screen_repository
 
     async def execute(self, dto: ScreenCreateDTO) -> ScreenReadDTO:
-        screen_entity = Screen(slug=dto.slug, name=dto.name, complex_id=dto.complex_id, building_id=dto.building_id)
+        screen_entity = Screen(
+            slug=dto.slug,
+            name=dto.name,
+            complex_id=dto.complex_id,
+            building_id=dto.building_id,
+        )
 
         saved_screen = await self.screen_repo.save(screen_entity)
 
