@@ -42,6 +42,9 @@ class ScreenModel(Base):
     slug: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
 
+    complex_id: Mapped[int | None] = mapped_column(Integer, index=True, nullable=True)
+    building_id: Mapped[int | None] = mapped_column(Integer, index=True, nullable=True)
+
     is_emergency: Mapped[bool] = mapped_column(Boolean, default=False)
     emergency_text: Mapped[str | None] = mapped_column(Text, nullable=True)
 

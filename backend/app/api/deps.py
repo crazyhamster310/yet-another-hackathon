@@ -8,10 +8,13 @@ from app.application.use_cases.data.get_ujin_parking_stats import (
 from app.application.use_cases.data.get_ujin_storage_stats import (
     GetUjinStorageStatsUseCase,
 )
+from app.application.use_cases.data.get_ujin_complexes import GetUjinComplexesUseCase
+from app.application.use_cases.data.get_ujin_buildings import GetUjinBuildingsUseCase
 from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
 from app.application.use_cases.screens.create_screen import CreateScreenUseCase
+from app.application.use_cases.screens.list_screens import ListScreensUseCase
 from app.application.use_cases.screens.get_screen_config import (
     GetScreenConfigUseCase,
 )
@@ -24,6 +27,7 @@ from app.application.use_cases.templates.create_template import (
 from app.application.use_cases.templates.delete_template import (
     DeleteTemplateUseCase,
 )
+
 from app.application.use_cases.templates.get_template import GetTemplateUseCase
 from app.application.use_cases.templates.list_templates import (
     ListTemplatesUseCase,
@@ -82,6 +86,11 @@ def get_create_screen_use_case(
 ) -> CreateScreenUseCase:
     return CreateScreenUseCase(repo)
 
+def get_list_screens_use_case(
+    repo: IScreenRepository = Depends(get_screen_repository),
+) -> ListScreensUseCase:
+    return ListScreensUseCase(repo)
+
 
 # TEMPLATE
 
@@ -136,3 +145,14 @@ def get_ujin_storage_use_case(
     provider: IUjinProvider = Depends(get_ujin_provider),
 ) -> GetUjinStorageStatsUseCase:
     return GetUjinStorageStatsUseCase(provider)
+
+def get_ujin_complexes_use_case(
+    provider: IUjinProvider = Depends(get_ujin_provider),
+) -> GetUjinComplexesUseCase:
+    return GetUjinComplexesUseCase(provider)
+
+
+def get_ujin_buildings_use_case(
+    provider: IUjinProvider = Depends(get_ujin_provider),
+) -> GetUjinBuildingsUseCase:
+    return GetUjinBuildingsUseCase(provider)

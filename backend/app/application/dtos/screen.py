@@ -35,6 +35,8 @@ class ScreenReadDTO(BaseModel):
     id: UUID
     slug: str
     name: str
+    complex_id: int | None = None
+    building_id: int | None = None
     is_emergency: bool
     emergency_text: str | None
     layout: dict[int, TemplateDTO | None]
@@ -49,3 +51,5 @@ class EmergencyUpdateDTO(BaseModel):
 class ScreenCreateDTO(BaseModel):
     slug: str = Field(..., min_length=3, max_length=100)
     name: str = Field(..., min_length=1, max_length=255)
+    complex_id: int | None = None
+    building_id: int | None = None
