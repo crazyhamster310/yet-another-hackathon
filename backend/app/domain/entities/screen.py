@@ -11,8 +11,8 @@ class Template(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     name: str
     widget_type: WidgetType
-    duration: int = 15
     settings: dict = Field(default_factory=dict)
+    content_rotation_settings: dict = Field(default_factory=dict)
 
 
 class Screen(BaseModel):
@@ -25,4 +25,10 @@ class Screen(BaseModel):
     is_emergency: bool = False
     emergency_text: str | None = None
 
-    playlist: list[Template] = Field(default_factory=list)
+    layout: dict[int, Template | None] = Field(
+        default_factory=lambda: {0: None, 1: None, 2: None, 3: None}
+    )
+
+    def assign_template(self, slot_index: int, template: Template):
+        if 0 <= slot_index <= 3:
+            self.layout[slot_index] = template
