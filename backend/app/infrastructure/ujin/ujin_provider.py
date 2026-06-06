@@ -1,6 +1,6 @@
 import httpx
 from typing import Dict
-from ujin_provider import IUjinProvider
+from app.domain.interfaces.providers.ujin_provider import IUjinProvider
 
 class UjinProvider(IUjinProvider):
 
@@ -52,17 +52,16 @@ class UjinProvider(IUjinProvider):
         
         parking_data = {}
         endpoints = ["all", "free", "occupied", "public", "private", "unassigned"]
-        
-        for endpoint in endpoints:
-            try:
-                async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient() as client:        
+            for endpoint in endpoints:
+                try:
                     response = await client.get(f"{self.base_url}/api/v1/parking/{endpoint}", params=params, timeout=self.timeout)
                     response.raise_for_status()
                     parking_data[endpoint] = response.json()
-            except httpx.HTTPStatusError as e:
-                parking_data[endpoint] = {"error": f"HTTP {e.response.status_code}", "details": str(e)}
-            except Exception as e:
-                parking_data[endpoint] = {"error": "Request failed", "details": str(e)}
+                except httpx.HTTPStatusError as e:
+                    parking_data[endpoint] = {"error": f"HTTP {e.response.status_code}", "details": str(e)}
+                except Exception as e:
+                    parking_data[endpoint] = {"error": "Request failed", "details": str(e)}
         
         data["parking"] = parking_data
         return data
@@ -79,17 +78,16 @@ class UjinProvider(IUjinProvider):
         
         storage_data = {}
         endpoints = ["all", "free", "occupied", "public", "private", "unassigned"]
-        
-        for endpoint in endpoints:
-            try:
-                async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient() as client:        
+            for endpoint in endpoints:
+                try:
                     response = await client.get(f"{self.base_url}/api/v1/storage/{endpoint}", params=params, timeout=self.timeout)
                     response.raise_for_status()
                     storage_data[endpoint] = response.json()
-            except httpx.HTTPStatusError as e:
-                storage_data[endpoint] = {"error": f"HTTP {e.response.status_code}", "details": str(e)}
-            except Exception as e:
-                storage_data[endpoint] = {"error": "Request failed", "details": str(e)}
+                except httpx.HTTPStatusError as e:
+                    storage_data[endpoint] = {"error": f"HTTP {e.response.status_code}", "details": str(e)}
+                except Exception as e:
+                    storage_data[endpoint] = {"error": "Request failed", "details": str(e)}
         
         data["storage"] = storage_data
         return data
