@@ -22,6 +22,9 @@ class Screen(BaseModel):
     slug: str
     name: str
 
+    complex_id: int | None = None
+    building_id: int | None = None
+
     is_emergency: bool = False
     emergency_text: str | None = None
 

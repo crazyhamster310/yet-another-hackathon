@@ -29,6 +29,8 @@ class SqlAlchemyScreenRepository(
             id=model.id,
             slug=model.slug,
             name=model.name,
+            complex_id=model.complex_id,
+            building_id=model.building_id,
             is_emergency=model.is_emergency,
             emergency_text=model.emergency_text,
             layout=layout,
@@ -78,12 +80,14 @@ class SqlAlchemyScreenRepository(
 
         if not model:
             model = ScreenModel(
-                id=screen.id, slug=screen.slug, name=screen.name
+                id=screen.id, slug=screen.slug, name=screen.name, complex_id=screen.complex_id, building_id=screen.building_id
             )
             self.session.add(model)
 
         model.is_emergency = screen.is_emergency
         model.emergency_text = screen.emergency_text
+        model.complex_id = screen.complex_id
+        model.building_id = screen.building_id
 
         existing_slots = {
             slot.slot_index: slot for slot in (model.slots or [])
