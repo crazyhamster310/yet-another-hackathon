@@ -7,6 +7,7 @@ from app.api.deps import (
     get_assign_template_use_case,
     get_create_screen_use_case,
     get_get_screen_config_use_case,
+    get_list_screens_use_case
 )
 from app.application.dtos.screen import (
     EmergencyUpdateDTO,
@@ -16,6 +17,7 @@ from app.application.dtos.screen import (
 from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
+from app.application.use_cases.screens.list_screens import ListScreensUseCase
 from app.application.use_cases.screens.create_screen import CreateScreenUseCase
 from app.application.use_cases.screens.get_screen_config import (
     GetScreenConfigUseCase,
@@ -44,6 +46,11 @@ async def get_screen_configuration(
 ):
     return await use_case.execute(slug)
 
+@router.get("/", response_model=list[ScreenReadDTO])
+async def list_screens(
+    use_case: ListScreensUseCase = Depends(get_list_screens_use_case),
+):
+    return await use_case.execute()
 
 @router.post("/emergency", status_code=status.HTTP_204_NO_CONTENT)
 async def update_emergency_mode(

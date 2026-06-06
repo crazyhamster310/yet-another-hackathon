@@ -12,6 +12,7 @@ from app.application.use_cases.screens.activate_emergency import (
     ActivateEmergencyUseCase,
 )
 from app.application.use_cases.screens.create_screen import CreateScreenUseCase
+from app.application.use_cases.screens.list_screens import ListScreensUseCase
 from app.application.use_cases.screens.get_screen_config import (
     GetScreenConfigUseCase,
 )
@@ -24,6 +25,7 @@ from app.application.use_cases.templates.create_template import (
 from app.application.use_cases.templates.delete_template import (
     DeleteTemplateUseCase,
 )
+
 from app.application.use_cases.templates.get_template import GetTemplateUseCase
 from app.application.use_cases.templates.list_templates import (
     ListTemplatesUseCase,
@@ -81,6 +83,11 @@ def get_create_screen_use_case(
     repo: IScreenRepository = Depends(get_screen_repository),
 ) -> CreateScreenUseCase:
     return CreateScreenUseCase(repo)
+
+def get_list_screens_use_case(
+    repo: IScreenRepository = Depends(get_screen_repository),
+) -> ListScreensUseCase:
+    return ListScreensUseCase(repo)
 
 
 # TEMPLATE
