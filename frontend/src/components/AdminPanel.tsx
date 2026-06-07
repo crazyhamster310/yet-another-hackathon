@@ -11,7 +11,11 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 
-export default function AdminPanel() {
+export default function AdminPanel({
+  onNavigate,
+}: {
+  onNavigate: (p: string) => void;
+}) {
   const [screens, setScreens] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -121,10 +125,16 @@ export default function AdminPanel() {
       <aside className="fixed left-0 top-0 h-screen w-16 border-r border-slate-200 bg-white flex flex-col items-center py-6 z-30">
         <div className="text-[10px] font-black mb-10">Logo</div>
         <nav className="flex flex-col gap-4">
-          <button className="p-3 rounded-xl bg-[#cffafe] text-[#0891b2] shadow-sm">
+          <button
+            onClick={() => onNavigate("/")}
+            className="p-3 rounded-xl bg-[#cffafe] text-[#0891b2] shadow-sm"
+          >
             <Home size={20} strokeWidth={2} />
           </button>
-          <button className="p-3 rounded-xl text-slate-400 hover:bg-slate-50 transition-colors">
+          <button
+            onClick={() => onNavigate("/templates")}
+            className="p-3 rounded-xl text-slate-400 hover:bg-slate-50 transition-colors"
+          >
             <Folder size={20} strokeWidth={2} />
           </button>
         </nav>

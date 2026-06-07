@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import DisplayPlayer from "./components/DisplayPlayer";
 import AdminPanel from "./components/AdminPanel";
+import TemplatesPanel from "./components/TemplatesPanel";
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    const onLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-
+    const onLocationChange = () => setCurrentPath(window.location.pathname);
     window.addEventListener("popstate", onLocationChange);
 
     const originalPushState = window.history.pushState;
@@ -17,26 +15,20 @@ export default function App() {
       originalPushState.apply(this, args);
       onLocationChange();
     };
-
-    return () => {
-      window.removeEventListener("popstate", onLocationChange);
-      window.history.pushState = originalPushState;
-    };
+    return () => window.removeEventListener("popstate", onLocationChange);
   }, []);
 
+  const navigate = (path: string) => {
+    window.history.pushState({}, "", path);
+  };
+
   if (currentPath.startsWith("/player/")) {
-    const slug = currentPath.split("/")[2];
-
-    if (!slug) {
-      return (
-        <div className="flex h-screen items-center justify-center bg-red-50 text-red-600 font-bold font-sans">
-          Ошибка: ID дисплея не указан в URL
-        </div>
-      );
-    }
-
-    return <DisplayPlayer slug={slug} />;
+    return <DisplayPlayer slug={currentPath.split("/")[2]} />;
   }
 
-  return <AdminPanel />;
+  if (currentPath === "/templates") {
+    return <TemplatesPanel onNavigate={navigate} />;
+  }
+
+  return <AdminPanel onNavigate={navigate} />;
 }
