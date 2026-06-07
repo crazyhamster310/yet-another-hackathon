@@ -1,4 +1,5 @@
 import { Folder, Home } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function Row(props: any) {
   return (
@@ -33,6 +34,13 @@ function Row(props: any) {
 }
 
 function App() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/api/screens")
+      .then((response) => response.json())
+      .then((data) => setRows(data))
+      .catch((error) => console.log("data load fail:", error));
+  }, []);
   return (
     <div className="min-h-screen bg-slate-100">
       <aside className="fixed left-0 top-0 h-screen w-16 border-r border-slate-200 bg-white">
@@ -60,13 +68,16 @@ function App() {
           <div className="w-32 text-right">Загрузка</div>
         </div>
 
-        <Row
-          title="⌄ Жилой комплекс 1"
-          address="ул. Уличная, д. 15, к. 1-2"
-          status="Проблемы"
-          id="jk101"
-          indent={0}
-        />
+        {rows.map((row) => (
+          <Row
+            key={row.id}
+            title={row.title}
+            address={row.address}
+            status={row.status}
+            id={row.id}
+            indent={row.indent}
+          />
+        ))}
       </main>
     </div>
   );
