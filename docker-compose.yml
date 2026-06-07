@@ -74,6 +74,7 @@ services:
       - caddy_config:/config
     depends_on:
       - backend
+      - frontend
 
   simulator:
     build:
@@ -86,6 +87,16 @@ services:
       proxy:
         condition: service_started
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: smart_display_frontend
+    restart: always
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
 volumes:
   postgres_data:
   caddy_data:
